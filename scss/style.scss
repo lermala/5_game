@@ -1,0 +1,19 @@
+@import "_nullstyle";
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+canvas {
+    background: #eee;
+    display: block;
+    margin: 100px auto;
+    padding: 100px;
+    border: 4px solid #000;
+    overflow: hidden;
+}
+
+.reversed {
+    transform: scale(-1, 1);    
+}

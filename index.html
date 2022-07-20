@@ -9,13 +9,26 @@
     
 </head>
 <body>
-    <img id="btnStartGame" src="img/box.png" alt="" height="300px">
-    <canvas id="canvas" width="1792px" height="1008px">
-        
-    </canvas>
+
+    <div class="container">
+        <div class="containerGame">
+            <div class="containerGame__menu">
+                <div id="btnStartGame" class="btnPixel">
+                    <div class="btnPixel__text noselect">START</div>
+                </div>
+                <div id="btnEndGame" class="btnPixel">
+                    <div class="btnPixel__text noselect">END</div>
+                </div>
+                <div class="containerGame__text">Score</div>
+                <div id="scoreText" class="containerGame__text">0</div>
+            </div>
+            <canvas id="canvas" width="710" height="400">      
+            </canvas>
+        </div>
+    </div>
 
     
-
-    <script type="module" src="js/game.js"></script>
+    
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

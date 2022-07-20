@@ -1,19 +1,121 @@
 @import "_nullstyle";
 
+@font-face {
+	font-family: 'UndertaleFont';
+	src: url('../fonts/UndertaleFont/Undertale-Battle-Font.eot');
+	src: local('☺'), url('../fonts/UndertaleFont/Undertale-Battle-Font.woff') format('woff'), url('../fonts/UndertaleFont/Undertale-Battle-Font.ttf') format('truetype'), url('../fonts/UndertaleFont/Undertale-Battle-Font.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
 * {
     padding: 0;
     margin: 0;
+    
 }
 
-canvas {
-    background: #eee;
-    display: block;
-    margin: 100px auto;
-    padding: 100px;
-    border: 4px solid #000;
-    overflow: hidden;
+
+
+.container{
+    margin: auto 10%;
+}
+
+.containerGame {    
+    margin: 50px 50px;
+    padding: 20px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(16, 16, 16);    
+
+    .containerGame__menu {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5px;
+
+        .containerGame__text{
+            color: white;
+            font-family: UndertaleFont;
+            font-size: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0px 7px;
+            
+            align-self: center;
+        }
+    }
+
+    canvas {
+        background: url('../img/room.png') 0 0/100% 100% no-repeat;       
+        
+        overflow: hidden;
+        width: 896;
+        height: 504;
+    }
+
+    .btnPixel {        
+        height: 50px; 
+        width: 100px;   
+        margin-right: 8px;      
+        margin-left: 8px;      
+        // getting image from sprite
+        $bt_h: 100px;
+        $bt_w: 200px;
+        background-position: 0 0;        
+        background: url('../img/sprite_btns_pixel.png') 0 0/cover ;       
+        
+        // font
+        color: rgb(249, 240, 199);
+        font-family: UndertaleFont;
+        font-size: 42px;
+
+        .btnPixel__text{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 8px;
+
+            font-family: UndertaleFont;
+            font-size: 22px;            
+            color: rgb(249, 240, 199);
+            letter-spacing: 1.5px;            
+            
+            transition: color 1s, font-size 0.5s;  
+
+            &:active {
+                padding-bottom: 0px;
+                padding-top: 7px;
+                font-size: 24px;  
+            }
+            &:hover {      
+                transition: color 0.5s, font-size 0.5s; 
+                font-size: 24px;        
+            }
+        }
+
+        &:hover {           
+            // background-position: $bt_w * 2 $bt_h * 2;   
+            background: url('../img/sprite_btns_pixel.png') $bt_w * 1 $bt_h * 1/cover ;   
+        }
+
+        &:active {
+            background: url('../img/sprite_btns_pixel.png') $bt_w * 2 $bt_h * 2/cover ;   
+        }
+    }
+
+}
+
+.noselect {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .reversed {
-    transform: scale(-1, 1);    
+    transform: scale(-1, 1);
 }

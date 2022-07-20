@@ -1,7 +1,5 @@
-import {utils} from "./utils.js";
+import { utils } from "./utils.js";
 // import { getRandomInt } from "./utils.js";
-
-"use strict" // принудительное включение новых функций 
 
 /**
  * Метод requestAnimationFrameпозволяет привязать перерисовку анимации
@@ -17,10 +15,7 @@ window.requestAnimationFrame = requestAnimationFrame;
 
 
 var cvs = document.getElementById("canvas");
-
-
 var ctx = cvs.getContext("2d");
-
 
 var bg = new Image();
 var char = new Image();
@@ -36,21 +31,35 @@ spriteImg.src = "./img/character/css_sprite.png"
 foodSprite.src = "./img/food_sprite.png"
 
 // sizes
-const BG_W = 1792;
-const BG_H = 1008;
-const CHAR_W = 184; // 230
-const CHAR_H = 360; // 450
+const BG_W = cvs.width;
+const BG_H = cvs.height;
+const CHAR_W = 92; // 230
+const CHAR_H = 180; // 450
+
+findSize();
+function findSize(){
+    const z = 230;
+    const z2 = 450;
+
+    var res = 2.5;
+    // 640 180
+    console.log(z / res + " " + z2 / res);
+}
 
 // позиция персонажа
 let xPos = 0;
 let yPos = BG_H - CHAR_H;
 // шаг персонажа
-const STEP_H = 40; // увеличение по оси x
+const STEP_H = 20; // увеличение по оси x
 let step = STEP_H; // увеличение по оси x
-let JUMP_H = CHAR_H/2; // высота прыжка
-const gravity = 6;
+let JUMP_H = CHAR_H / 2 + CHAR_H/10; // высота прыжка
+const gravity = 4;
 
+// GENERAL
+let isGameStarted = false;
 let score = 0;
+
+
 
 
 // ==================SPRITES=====================
@@ -104,7 +113,7 @@ class Sprite {
 
     flip() {
         this.ctx.save();
-        this.ctx.translate(200, 0);
+        this.ctx.translate(CHAR_W, 0);
         this.ctx.scale(-1, 1);
         //this.ctx.drawImage(char, xPos, yPos, 200, 200);
         // this.ctx.drawImage(char, xPos, yPos, 200, 200);
@@ -120,6 +129,8 @@ class Sprite {
             CHAR_W,
             CHAR_H
         )
+
+        
 
         this.ctx.restore();
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -173,19 +184,17 @@ class Sprite {
         let loop = () => {
             this.update();
             this.render();
-
-            //window.requestAnimationFrame(loop); // todo
         }
         return loop;
     }
-
-
+    requestDrawing;
     start() {
-        window.requestAnimationFrame(this.redraw());
+        requestDrawing = window.requestAnimationFrame(this.redraw());
     }
 
     end() {
-        window.cancelAnimationFrame(this.redraw());
+        window.cancelAnimationFrame(requestDrawing);
+        // window.cancelAnimationFrame(requestDrawing);
     }
     goToFirstFrame() {
         this.frameIndex = 0;
@@ -213,6 +222,7 @@ let currentSprite = spriteDefault_character;
 // ==================SPRITES=====================
 
 
+
 // ==================food=====================
 // вкусняшки
 class Food {
@@ -223,12 +233,9 @@ class Food {
         this.type = type; // (1) - good, (-1) - bad
     }
 }
-const STEP_FOOD = -5; // увеличение по оси x
-const FOOD_H_W = 140; // размеры
-let food = [
-    new Food(0,0,0,1),
-    new Food(500,200,0,1),
-];
+let gravityFood = 1; // увеличение по оси x
+const FOOD_H_W = 140-90; // размеры
+let food = [];
 // спрайты еды
 const sprite_food = new Sprite({
     ctx: canvas.getContext('2d'),
@@ -240,29 +247,63 @@ const sprite_food = new Sprite({
 });
 // ==================food=====================
 
+
+
+
 // ==================   EVENTS  =====================
 // клик на кнопку Начать игру
-const btnStart = document.getElementById("btnStartGame");
-btnStart.addEventListener("click", startGame);
+const btnStart = document.getElementById("btnStartGame"); // todo
+btnStart.addEventListener("click", startGame); // todo
+document.getElementById("btnEndGame").addEventListener("click", endGame);
 
-function startGame(){
-    console.log("game started");
-    // char.onload = draw; // Первоначальная загрузка (при загрузке изображения char) // todo
-    draw();
+var isSoundOn = true;
 
-    // При нажатии на какую-либо кнопку
-    document.addEventListener("keydown", onMove);
-    document.addEventListener("keyup", animateStaying);
+export function loadGame(){
+    loadAudio();
+    
+    addAudioBtns();
+}
+
+
+export function startGame(){
+    if (!isGameStarted){
+        console.log("game started");
+        isGameStarted = true;
+        // char.onload = draw; // Первоначальная загрузка (при загрузке изображения char) // todo
+        draw();
+    
+        // При нажатии на какую-либо кнопку
+        document.addEventListener("keydown", onMove);
+        document.addEventListener("keyup", animateStaying);
+    }
 }
 //char.onload = draw; // Первоначальная загрузка (при загрузке изображения char) // todo
+function writeScore(score){
+    document.getElementById("scoreText").textContent = score;
+}
+
+export function endGame(){
+    if (isGameStarted){
+        console.log("game ended");        
+        window.cancelAnimationFrame(draw);
+        window.cancelAnimationFrame(draw);
+        
+        //cancelAnimationFrame(idA);
+        // очистить весь холст
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+}
 
 // ==================DRAWING=====================
-function draw() {
-    
-    drawFood1();
-    
+var requestDrawing;
+export function draw() {    
+    drawFood1();    
     drawCharacter();
-    window.requestAnimationFrame(draw);
+
+    if (isGameStarted) {
+        requestDrawing = window.requestAnimationFrame(draw);
+    }
+    
 
 }
 function drawFood1() {
@@ -282,11 +323,11 @@ function drawFood1() {
                 score++;
             } else {
                 score--;
-            }
+            }            
         }
 
         // смещение вниз со скоростью (падение)
-        element.y = element.y + 1;
+        element.y = element.y + gravityFood;
 
         if (element.y == BG_H) { // todo
             console.log("lose " + score);
@@ -303,6 +344,7 @@ function drawFood1() {
             FOOD_H_W, FOOD_H_W
         );
     });
+    writeScore(score);
 }
 function isInTouch(i) {
     const character_posX = xPos; // лево
@@ -336,12 +378,7 @@ function isInTouch(i) {
 
 function drawCharacter() {
     // рисуем персонажа по спрайту в зависимости от его действий
-    // currentSprite.start(); // todo
     currentSprite.start(); // todo    
-    // currentSprite.end();
-
-    //mirrorImage(ctx, char, xPos, yPos, CHAR_W, CHAR_H, true, false); // horizontal mirror
-    //flipHorizontally(ctx, bg, xPos, yPos, CHAR_W, CHAR_H);
 }
 // ==================DRAWING=====================
 
@@ -358,20 +395,21 @@ function addRandomFood(){
     ));
 }
 function eatFood(i) {
-    console.log("EATED " + i);
     // убираем этот элемент    
     // const index = food.indexOf(i);
+    
+    playAudio(eatAudio);
+    
     removeFood(i);
-
-    // меняем анимацию в зав-ти от типа элемента
 }
 function removeFood(i){
     const index = i;
     if (index > -1) { // only splice array when item is found
         food.splice(index, 1); // 2nd parameter means remove one item only
-        console.log("removed");
     }
 }
+
+
 
 // ============== character ACTIONS ============================
 function move(x, y) {
@@ -396,9 +434,8 @@ function move(x, y) {
 function jump(x, y) {
     if (yPos < (CHAR_H - 1)) { // если в прыжке
         // ничего нельзя сделать
-
     } else {
-        move(x, y); // подпрыгнули        
+        move(x, y); // подпрыгнули  
 
         // падаем
         let timer = setInterval(() => {
@@ -417,7 +454,6 @@ function jump(x, y) {
 
 // ==================   animation =====================
 // character animation
-// setInterval(animateStaying(), 30)
 function animateStaying() {
     currentSprite.end();
 
@@ -444,7 +480,6 @@ function animateGoing() {
 
 
 
-
 // Вызывается метод идти
 function onMove(e) {
     let x = 0;
@@ -453,7 +488,8 @@ function onMove(e) {
     switch (e.key) {
         case "ArrowLeft":  // если нажата клавиша влево
             x = -STEP_H;
-            move(x, y);
+            move(x, y); 
+            playAudio(stepAudio);        
 
             animateGoing();
             currentSprite.isReversed = true;
@@ -461,32 +497,61 @@ function onMove(e) {
         case "ArrowRight":   // если нажата клавиша вправо
             x = STEP_H;
             move(x, y);
+            playAudio(stepAudio);        
 
             animateGoing();
             currentSprite.isReversed = false;
             break;
         case "ArrowUp":   // если нажата клавиша вверх
-            // move(0, -JUMP_H);
             y = -JUMP_H;
-            // x = 1;
-            if (!yPos < (CHAR_H - 1)) { // если в прыжке
-                // ничего нельзя сделать
-                jump(x, y);
-                
+            if (!yPos < (CHAR_H - 1)) { // если не в прыжке 
+                playAudio(jumpAudio);            
+                jump(x, y);                 
             }
             // x, y = 0;
             break;
-        case "ArrowDown":   // если нажата клавиша вниз
-            // y = JUMP_H;
-            // move(x, y);
-            break;
     }
-    console.log(`x=${xPos} y=${yPos}`);
+    //console.log(`x=${xPos} y=${yPos}`);
 }
 
-// ==================   EVENTS  =====================
 
+// ================= MUSIC ===================
+var stepAudio = new Audio();
+var eatAudio = new Audio();
+var jumpAudio = new Audio();
+var endAudio = new Audio();
 
+var clickAudio = new Audio();
+var startAudio = new Audio();
 
+function loadAudio(){    
+    stepAudio.src = "./audio/step.wav";
+    eatAudio.src = "./audio/eat.wav";
+    clickAudio.src = "./audio/click.wav";
+    startAudio.src = "./audio/start.wav";
+    jumpAudio.src = "./audio/jump.wav";
+    endAudio.src = "./audio/lose.wav";    
+
+    isSoundOn = true;
+}
+
+function soundOff(){
+    isSoundOn = false;
+}
+
+function playAudio(audio){
+    if (isSoundOn) {
+        audio.play();
+    }
+}
+
+function addAudioBtns(){
+    // adding audio for btns
+    const btnsPixel = document.querySelectorAll(".btnPixel");    
+    btnsPixel.forEach(item => {
+        item.addEventListener("click", () => { playAudio(startAudio); }, false );
+        item.addEventListener("mouseover", () => { playAudio(clickAudio); }, false );
+    })
+}
 
 

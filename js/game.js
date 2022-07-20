@@ -187,9 +187,9 @@ class Sprite {
         }
         return loop;
     }
-    requestDrawing;
+    // requestDrawing;
     start() {
-        requestDrawing = window.requestAnimationFrame(this.redraw());
+        window.requestAnimationFrame(this.redraw());
     }
 
     end() {
@@ -301,7 +301,7 @@ export function draw() {
     drawCharacter();
 
     if (isGameStarted) {
-        requestDrawing = window.requestAnimationFrame(draw);
+        window.requestAnimationFrame(draw);
     }
     
 

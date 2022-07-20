@@ -102,22 +102,29 @@ h6 {
   margin: 0;
 }
 
+body {
+  background-color: #222937;
+}
+
 .container {
   margin: auto 10%;
 }
 
 .containerGame {
   margin: 50px 50px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  background-color: rgb(16, 16, 16);
 }
 .containerGame .containerGame__menu {
   display: flex;
   justify-content: center;
-  margin-bottom: 5px;
+  padding: 5px;
+  border-top: 3px solid #000;
+  border-right: 3px solid #000;
+  border-left: 3px solid #000;
+  background-color: #5c5185;
 }
 .containerGame .containerGame__menu .containerGame__text {
   color: white;
@@ -133,12 +140,11 @@ h6 {
   overflow: hidden;
   width: 896;
   height: 504;
+  border: 3px solid #000;
 }
 .containerGame .btnPixel {
   height: 50px;
   width: 100px;
-  margin-right: 8px;
-  margin-left: 8px;
   background-position: 0 0;
   background: url("../img/sprite_btns_pixel.png") 0 0/cover;
   color: rgb(249, 240, 199);
@@ -172,6 +178,10 @@ h6 {
 }
 .containerGame .btnPixel:active {
   background: url("../img/sprite_btns_pixel.png") 400px 200px/cover;
+}
+
+#btnEndGame {
+  display: none;
 }
 
 .noselect {

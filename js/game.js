@@ -296,7 +296,7 @@ export function endGame(){
 
 // ==================DRAWING=====================
 var requestDrawing;
-export function draw() {    
+export function draw() {        
     drawFood1();    
     drawCharacter();
 
@@ -397,6 +397,7 @@ function addRandomFood(){
 function eatFood(i) {
     // убираем этот элемент    
     // const index = food.indexOf(i);
+    console.log("eated");
     
     playAudio(eatAudio);
     
